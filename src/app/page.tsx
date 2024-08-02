@@ -20,7 +20,7 @@ export default function ChatPage() {
             variant={"ghost"}
           >
             <Link
-              href="https://github.com/zaidmukaddam/openlord.ai"
+              href="hhttps://git.new/openlord"
               className="flex items-center gap-1"
             >
               <GitHubLogoIcon />
