@@ -1,8 +1,11 @@
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import Link from "next/link";
 
 import { DarkModeToggle } from "@/components/atoms/DarkModeToggle";
 import { Chat } from "@/components/chat/Chat";
 import { SettingsPanel } from "@/components/chat/SettingsPanel";
+import { Button } from "@/components/ui/button";
 
 export default function ChatPage() {
   return (
@@ -13,6 +16,17 @@ export default function ChatPage() {
           <div className="text-lg font-semibold">Openlord.AI</div>
         </div>
         <div className="flex gap-1">
+          <Button
+            variant={"ghost"}
+          >
+            <Link
+              href="https://github.com/zaidmukaddam/openlord.ai"
+              className="flex items-center gap-1"
+            >
+              <GitHubLogoIcon />
+              Source
+            </Link>
+          </Button>
           <DarkModeToggle />
           <SettingsPanel />
         </div>
