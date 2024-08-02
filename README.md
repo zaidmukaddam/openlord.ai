@@ -1,6 +1,6 @@
 # OpenLord
 
-![OpenLord](openlord-with-name.webp)
+![OpenLord](public/openlord-with-name.webp)
 
 OpenLord is a simple open-source chatbot built with cutting-edge AI models and technologies. It leverages the power of the Vercel AI SDK to provide an intelligent and responsive chat experience.
 
