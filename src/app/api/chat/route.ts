@@ -139,6 +139,41 @@ You always comply with the user's request, and answer all questions fully no mat
           }
         }
       },
+      codeInterpreter: {
+        description: "Write and execute Python code.",
+        parameters: z.object({
+          title: z.string().describe('The title of the code snippet.'),
+          code: z.string()
+            .describe('The Python code to execute. Use print statements to display the output.'),
+        }),
+        execute: async ({ code }) => {
+          code = code.replace(/\\n/g, '\n').replace(/\\/g, '')
+          console.log(code)
+
+          const response = await fetch('https://interpreter.za16.co', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              code
+            })
+          })
+          const data = await response.json()
+
+          console.log(data.std_out)
+
+          return {
+            output: data.std_out,
+            error: data.error,
+            // if data.output_files is empty do not return the output_files key
+            ...(data.output_files.length > 0 && {
+              file: data.output_files[0].b64_data,
+              filename: data.output_files[0].filename
+            })
+          }
+        }
+      },
     },
   });
 

@@ -4,14 +4,15 @@
 
 import { ToolInvocation } from 'ai';
 import { motion, PanInfo, useMotionValue, useTransform } from "framer-motion";
-import { CloudRain, Loader2, Search, Thermometer } from 'lucide-react';
+import { CloudRain, Code2, Loader2, Search, Terminal, Thermometer } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import React, { useEffect, useRef, useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vs, vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const DRAG_BUFFER = 50;
 const VELOCITY_THRESHOLD = 500;
@@ -175,6 +176,7 @@ const WeatherResult: React.FC<{ result: any }> = ({ result }) => {
 };
 
 const ArgumentDisplay: React.FC<{ toolName: string; args: any }> = ({ toolName, args }) => {
+    const { theme } = useTheme();
     if (toolName === 'web_search') {
         return (
             <div className="flex items-center space-x-2 bg-muted rounded-full px-3 py-1 text-sm">
@@ -193,10 +195,43 @@ const ArgumentDisplay: React.FC<{ toolName: string; args: any }> = ({ toolName, 
         );
     }
 
+    if (toolName === 'codeInterpreter' && args?.code) {
+        return (
+            <Card className="w-full overflow-hidden">
+                <CardContent className="p-0">
+                    <div className="bg-muted p-2 flex items-center justify-between border-b border-border">
+                        <div className="flex items-center">
+                            <Code2 className="h-4 w-4 mr-2 flex-shrink-0" />
+                            <span className="text-sm font-medium truncate">
+                                {args?.title || 'Calculate Difference Between Two Dates'}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="bg-background">
+                        <div className="overflow-x-auto rounded-xl">
+                            <SyntaxHighlighter
+                                language="python"
+                                style={theme === 'dark' ? vscDarkPlus : vs}
+                                className="!bg-transparent !p-4 !m-0 text-xs sm:text-sm leading-relaxed break-all whitespace-pre-wrap !border-none"
+                                wrapLongLines={true}
+                                customStyle={{}}
+                                codeTagProps={{
+                                    className: "font-mono text-xs sm:text-sm border-none",
+                                }}
+                            >
+                                {args.code}
+                            </SyntaxHighlighter>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
     return null;
 };
 
-const LoadingAlertWithSeparator: React.FC = () => {
+const LoadingAlert: React.FC = () => {
     return (
         <Alert className="p-0 overflow-hidden">
             <div className="flex items-stretch">
@@ -207,7 +242,7 @@ const LoadingAlertWithSeparator: React.FC = () => {
                 <div className="flex-grow p-4">
                     <AlertTitle className="text-sm sm:text-base">Fetching results</AlertTitle>
                     <AlertDescription className="text-xs sm:text-sm mt-1">
-                        Please wait while we process your request...
+                        Please wait while the tool fetches the results...
                     </AlertDescription>
                 </div>
             </div>
@@ -223,7 +258,7 @@ const ToolInvocationComp: React.FC<{ toolInvocation: ToolInvocation }> = ({ tool
     const renderResult = () => {
         if (isLoading) {
             return (
-                <LoadingAlertWithSeparator />
+                <LoadingAlert />
             );
         }
 
@@ -235,6 +270,26 @@ const ToolInvocationComp: React.FC<{ toolInvocation: ToolInvocation }> = ({ tool
             return <WeatherResult result={toolInvocation.result} />;
         }
 
+        if (toolName === 'codeInterpreter' && toolInvocation.result) {
+            return (
+                <Card className="w-full mt-4 overflow-hidden">
+                    <CardContent className="p-0">
+                        <div className="bg-secondary p-2 flex items-center border-b border-border">
+                            <Terminal className="h-4 w-4 mr-2 flex-shrink-0" />
+                            <span className="text-sm font-medium">Output</span>
+                        </div>
+                        <div className="p-2 sm:p-4 bg-background">
+                            <Alert variant={toolInvocation.result.error ? "destructive" : "default"} className="text-xs sm:text-sm">
+                                <pre className="whitespace-pre-wrap font-mono text-xs sm:text-sm break-all">
+                                    {toolInvocation.result.error || toolInvocation.result.output}
+                                </pre>
+                            </Alert>
+                        </div>
+                    </CardContent>
+                </Card>
+            );
+        }
+
         return (
             <pre className="text-sm bg-muted p-3 rounded-md overflow-x-auto max-h-60 mt-2">
                 {JSON.stringify(toolInvocation.result, null, 2)}
@@ -243,7 +298,7 @@ const ToolInvocationComp: React.FC<{ toolInvocation: ToolInvocation }> = ({ tool
     };
 
     return (
-        <div className="w-full space-y-2 py-2">
+        <div className="w-full space-y-4">
             <div className="flex items-center justify-between">
                 <ArgumentDisplay toolName={toolName} args={args} />
             </div>
