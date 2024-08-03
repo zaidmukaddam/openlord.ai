@@ -219,7 +219,7 @@ const ArgumentDisplay: React.FC<{ toolName: string; args: any }> = ({ toolName, 
                                     className: "font-mono text-xs sm:text-sm border-none",
                                 }}
                             >
-                                {args.code}
+                                {args.code.replace(/^\s+|\s+$/g, '').replace(/\\n/g, '\n').trim()}
                             </SyntaxHighlighter>
                         </div>
                     </div>
