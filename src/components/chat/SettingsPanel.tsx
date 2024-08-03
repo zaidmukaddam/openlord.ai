@@ -85,18 +85,18 @@ export function SettingsPanel() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="gpt-4o-mini">
-                <div className="flex items-start gap-3 text-muted-foreground">
+                <div className="flex items-start gap-1 text-muted-foreground">
                   GPT4o <span className="font-medium text-foreground">mini</span>
                 </div>
               </SelectItem>
               <SelectItem value="gemini-1.5-flash">
-                <div className="flex items-start gap-3 text-muted-foreground">
-                  Gemini <span className="font-medium text-foreground">1.5 Flash</span>
+                <div className="flex items-start gap-1 text-muted-foreground">
+                  Gemini 1.5<span className="font-medium text-foreground">Flash</span>
                 </div>
               </SelectItem>
               <SelectItem value="claude-3-haiku">
-                <div className="flex items-start gap-3 text-muted-foreground">
-                  Claude <span className="font-medium text-foreground">3 Haiku</span>
+                <div className="flex items-start gap-1 text-muted-foreground">
+                  Claude 3<span className="font-medium text-foreground">Haiku</span>
                 </div>
               </SelectItem>
             </SelectContent>
